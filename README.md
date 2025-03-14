@@ -1,2 +1,15 @@
-# Mesterday_Code
-[Mesterday] 코드 https://play.google.com/store/apps/details?id=com.S1154.Mesterday_2025
+# Mesterday 
+
+## 프로젝트 설명
+> 고등학교 시절 추억의 스토리를 감상하면서,   
+> 함수 그래프로 된 퍼즐을 푸는 신개념 퍼즐 게임
+
+<br>
+
+* **장르**       퍼즐<br>
+* **개발 기간**   2020.12 ~ 2021.05<br>
+* **개발 인원**   3인<br>
+
+<br>
+
+## 구현 내용
