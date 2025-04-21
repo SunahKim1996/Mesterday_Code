@@ -1,11 +1,9 @@
 ﻿using Firebase.Extensions;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Firebase;
 using Firebase.Auth;
 using UnityEngine.SceneManagement;
-using Firebase.Database;
 
 public class AnonymousLogin : MonoBehaviour
 {
@@ -13,17 +11,11 @@ public class AnonymousLogin : MonoBehaviour
     public static FirebaseUser user;
     public static bool isFirstLogin;
 
-    public bool isLogInSuccess = false;
-    public bool isAlreadyLogin = false;
-    public GameObject logInBtn;
+    [SerializeField] bool isLogInSuccess = false;
+    [SerializeField] GameObject logInBtn;
 
-    public GameObject LoginTxt_1;
-    public GameObject LoginTxt_2;
-
-    public GameObject networkPopup;
-
-    public AudioSource soundEffect;
-    public AudioClip normalButtonEffect;
+    [SerializeField] GameObject loginingText;
+    [SerializeField] GameObject loginSuccessText;
 
     void Start()
     {
@@ -96,7 +88,7 @@ public class AnonymousLogin : MonoBehaviour
     public void OnClickAnnoymously()
     {
         logInBtn.SetActive(false);
-        LoginTxt_1.SetActive(true);
+        loginingText.SetActive(true);
 
         auth.SignInAnonymouslyAsync().ContinueWith(task => {
             if (task.IsCanceled)
@@ -125,20 +117,18 @@ public class AnonymousLogin : MonoBehaviour
     IEnumerator CheckLogIn()
     {
         while (!isLogInSuccess || !UserData.instance.isGetSavedData)
-        {            
             yield return null;
-        }
 
         if (isLogInSuccess && UserData.instance.isGetSavedData)
         {
-            GetComponent<Title>().logInBtn_1.gameObject.SetActive(false);
-            GetComponent<Title>().logInBtn_2.gameObject.SetActive(false);
+            logInBtn.gameObject.SetActive(false);
+            loginingText.SetActive(true);
 
-            LoginTxt_1.SetActive(true);
             yield return new WaitForSeconds(1.5f);
-            LoginTxt_1.SetActive(false);
 
-            LoginTxt_2.SetActive(true);
+            loginingText.SetActive(false);
+            loginSuccessText.SetActive(true);
+
             yield return new WaitForSeconds(1.5f);
 
             SceneManager.LoadScene(11);
