@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class MobileBackButton : MonoBehaviour
 {
-    //public AudioSource soundEffect;
-    //public AudioClip normalButtonEffect;
-
     CommonUI commonUI;
     commonUIType uiType;
 
@@ -20,24 +17,23 @@ public class MobileBackButton : MonoBehaviour
 
     void Update()
     {
+        if (commonUI == null)
+            return;
+
         if (Input.GetKeyDown(KeyCode.Escape))
             commonUI.ToggleUI(uiType, true);
     }
 
     public void OnConfirmButton()
     {
-        //Sound
-        //soundEffect.PlayOneShot(normalButtonEffect);
-        //soundEffect.volume = SoundManager.normalButtonEffect;
+        SoundManager.instance.PlaySFX(SoundClip.ButtonSFX, 0.4f);
 
         Application.Quit();
     }
 
     public void OnCancelButton()
     {
-        //Sound
-        //soundEffect.PlayOneShot(normalButtonEffect);
-        //soundEffect.volume = SoundManager.normalButtonEffect;
+        SoundManager.instance.PlaySFX(SoundClip.ButtonSFX, 0.4f);
 
         commonUI.ToggleUI(uiType, false);
     }

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class IfNoNetwork : MonoBehaviour
+public class CheckNetwork : MonoBehaviour
 {
     CommonUI commonUI;
     commonUIType uiType;
@@ -17,6 +17,9 @@ public class IfNoNetwork : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (commonUI == null)
+            return;
+
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
             if(isCoolTime == false)

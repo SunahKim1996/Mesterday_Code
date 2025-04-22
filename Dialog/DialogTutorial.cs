@@ -12,30 +12,9 @@ public class DialogTutorial : DialogManager
     void Start()
     {
         inputDialog = GetComponent<InputDialog>();
-
-        dialogType = DialogType.Tutorial;
         dialogEndCallback = EndDialog;
 
         LoadJsonData(StartChat);
-    }
-
-    void LoadJsonData(Action endCallback)
-    {
-        // Json Data 로드 
-        dialogueData = JsonUtility.FromJson<DialogueData>(dialogJsonData.text);
-
-        for (int i = 0; i < dialogueData.dialogTextList.Count; i++)
-        {
-            DialogInfo info = new DialogInfo();
-            info.dialogText = dialogueData.dialogTextList[i];
-            info.startCallback = GetStartCallback(i);
-            info.endCallback = GetEndCallback(i);
-
-            dialogueDataList.Add(info);
-        }
-
-        // 대사 출력 시작 
-        endCallback();
     }
 
     void EndDialog()
@@ -44,7 +23,7 @@ public class DialogTutorial : DialogManager
         StartCoroutine(FadeOut());
     }
 
-    Action GetStartCallback(int index)
+    protected override Action GetStartCallback(int index)
     {
         Action callback = null;
 
@@ -73,7 +52,7 @@ public class DialogTutorial : DialogManager
         return callback;
     }
 
-    Action GetEndCallback(int index)
+    protected override Action GetEndCallback(int index)
     {
         Action callback = null;
 
@@ -82,12 +61,14 @@ public class DialogTutorial : DialogManager
             case 1:
                 callback = () =>
                 {
+                    isChatPause = true;
                     inputDialog.ToggleInputField(InputType.NickName, true);
                 };
                 break;
             case 2:
                 callback = () =>
                 {
+                    isChatPause = true;
                     inputDialog.ToggleInputField(InputType.SchoolName, true);
                 };
                 break;

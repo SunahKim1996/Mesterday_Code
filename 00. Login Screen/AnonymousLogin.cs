@@ -131,6 +131,7 @@ public class AnonymousLogin : MonoBehaviour
 
             yield return new WaitForSeconds(1.5f);
 
+            SoundManager.instance.StopBGM();
             SceneManager.LoadScene(11);
         }
     }

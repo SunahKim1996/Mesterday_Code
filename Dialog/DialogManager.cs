@@ -1,15 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 using UnityEngine.UI;
-
-public enum DialogType
-{
-    Tutorial,
-}
 
 [System.Serializable]
 public class DialogInfo
@@ -17,7 +10,6 @@ public class DialogInfo
     public string dialogText;
     public Action startCallback = null;
     public Action endCallback = null;
-    public bool isCanNextChat = false; // endCallback 이후 다음 대사로 넘어갈 수 있을 때 true 로 변경
 }
 
 public abstract class DialogManager : MonoBehaviour
@@ -27,7 +19,6 @@ public abstract class DialogManager : MonoBehaviour
         public List<string> dialogTextList;
     }
 
-    protected DialogType dialogType;
     [SerializeField] protected TextAsset dialogJsonData;
 
     protected DialogueData dialogueData;
@@ -38,20 +29,43 @@ public abstract class DialogManager : MonoBehaviour
     int talkNum = 0;
     bool isTalking = false;
     float chatSpeed = 0.1f;
-    bool isStart = false;
+    protected bool isChatPause = true;
 
     Coroutine chatCor = null;
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && isStart)
+        if (Input.GetMouseButtonDown(0) && !isChatPause)
             NextChat();
     }
+
+    protected void LoadJsonData(Action endCallback = null)
+    {
+        // Json Data 로드 
+        dialogueData = JsonUtility.FromJson<DialogueData>(dialogJsonData.text);
+
+        for (int i = 0; i < dialogueData.dialogTextList.Count; i++)
+        {
+            DialogInfo info = new DialogInfo();
+            info.dialogText = dialogueData.dialogTextList[i];
+            info.startCallback = GetStartCallback(i);
+            info.endCallback = GetEndCallback(i);
+
+            dialogueDataList.Add(info);
+        }
+
+        // 대사 출력 시작 
+        if (endCallback != null)
+            endCallback();
+    }
+
+    protected abstract Action GetStartCallback(int index);
+    protected abstract Action GetEndCallback(int index);
 
     protected void StartChat()
     {
         Chat();
-        isStart = true;
+        isChatPause = false;
     }
 
     void NextChat()
@@ -72,7 +86,7 @@ public abstract class DialogManager : MonoBehaviour
         // 대사 연출이 끝난 상태라면, 다음 대사 출력 시작
         else
         {
-            if (!dialogueDataList[talkNum].isCanNextChat && dialogueDataList[talkNum].endCallback != null)
+            if (dialogueDataList[talkNum].endCallback != null)
                 dialogueDataList[talkNum].endCallback();
 
             else if (talkNum < (dialogueDataList.Count - 1))
@@ -114,7 +128,7 @@ public abstract class DialogManager : MonoBehaviour
     }
     public void RefreshIsCanNextChat()
     {
-        dialogueDataList[talkNum].isCanNextChat = true;
+        isChatPause = false;
         NextChat();
     }
 }
