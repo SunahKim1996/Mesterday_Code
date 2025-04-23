@@ -13,12 +13,10 @@ public class DialogMainTutorial : DialogManager
     [SerializeField] SpeechBubbleManager speechBubbleManager;
 
     void Start()
-    {        
+    {       
         userData = UserData.instance.userData;
         if (userData.clearTutorial)
             return;
-
-        TouchPointMoving.isTalking = false; //TODO
 
         player.GetComponent<Animator>().SetInteger("anim", 0);
 
@@ -34,7 +32,14 @@ public class DialogMainTutorial : DialogManager
 
     void EndDialog()
     {
-        //TODO?
+        string[] dialogList =
+        {
+            "일단 좀 더 돌아다녀 보는게 좋겠다",
+            "앞에 문이 엄청 많네",
+            "문패를 보니 교실인 것 같아",
+            "가까이 가서 문을 열어보자",
+        };
+        speechBubbleManager.StartSpeechBubbleGuide(dialogList);
     }
 
     protected override Action GetStartCallback(int index)
@@ -68,8 +73,7 @@ public class DialogMainTutorial : DialogManager
                     isChatPause = true;
 
                     dialogFrame.SetActive(false);
-                    player.GetComponent<Animator>().SetInteger("anim", 0);
-                    TouchPointMoving.isTalking = false; //TODO
+                    player.GetComponent<Animator>().SetInteger("anim", 0);                    
 
                     string[] dialogList =
                     {

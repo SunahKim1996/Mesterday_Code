@@ -9,7 +9,6 @@ public class MainManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] GameObject diaryButton;
     [SerializeField] GameObject noteButton;
-    [SerializeField] GameObject pauseButton;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +23,5 @@ public class MainManager : MonoBehaviour
     {
         diaryButton.SetActive(state);
         noteButton.SetActive(state);
-        pauseButton.SetActive(state);
     }
 }

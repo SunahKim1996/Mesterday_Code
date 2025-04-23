@@ -70,7 +70,7 @@ public class InputDialog : MonoBehaviour
             }
 
             ToggleInputField(inputType, false);
-            dialogTutorial.RefreshIsCanNextChat();
+            dialogTutorial.RestartChat();
         }
         else
         {

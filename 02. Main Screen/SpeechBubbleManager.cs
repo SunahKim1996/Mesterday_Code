@@ -6,16 +6,18 @@ public class SpeechBubbleManager : MonoBehaviour
 {
     [SerializeField] GameObject speechBubble;
     [SerializeField] Text speechBubbleTxt;
+
+    [SerializeField] GameObject player;
     [SerializeField] Camera playerCam;
 
-    public bool isTalking = false;
+    [HideInInspector] public bool isTalking = false;
 
     Coroutine cor = null;
 
     void LateUpdate()
     {
         speechBubble.GetComponent<RectTransform>().position
-            = playerCam.WorldToScreenPoint(transform.position + new Vector3(0f, 0.9f, 0f));
+            = playerCam.WorldToScreenPoint(player.transform.position + new Vector3(0f, 0.9f, 0f));
     }
 
     public void StartSpeechBubbleGuide(string[] dialogList)

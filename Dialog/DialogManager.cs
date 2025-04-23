@@ -26,9 +26,9 @@ public abstract class DialogManager : MonoBehaviour
     [SerializeField] protected Text dialogUI;
     protected Action dialogEndCallback; // 모든 대사가 끝났을 때 처리 
 
-    int talkNum = 0;
-    bool isTalking = false;
+    int talkNum = 0;    
     float chatSpeed = 0.1f;
+    [HideInInspector] public bool isTalking = false;
     protected bool isChatPause = true;
 
     Coroutine chatCor = null;
@@ -68,6 +68,15 @@ public abstract class DialogManager : MonoBehaviour
         isChatPause = false;
     }
 
+    /// <summary>
+    /// 중단했을 때, 다시 시작 
+    /// </summary>
+    public void RestartChat()
+    {
+        isChatPause = false;
+        NextChat();
+    }
+
     void NextChat()
     {
         // 대사 출력 연출 중이라면, 연출 스킵 
@@ -97,8 +106,16 @@ public abstract class DialogManager : MonoBehaviour
 
             // 모든 대사 출력 완료하면, EndCallback
             else
-                dialogEndCallback();
+            {
+                if (chatCor != null)
+                {
+                    StopCoroutine(chatCor);
+                    chatCor = null;
+                }
 
+                if (dialogEndCallback != null)
+                    dialogEndCallback();
+            }
         }
     }
 
@@ -125,10 +142,5 @@ public abstract class DialogManager : MonoBehaviour
         }
 
         isTalking = false;
-    }
-    public void RefreshIsCanNextChat()
-    {
-        isChatPause = false;
-        NextChat();
     }
 }
