@@ -8,8 +8,10 @@ public class DialogMainTutorial : DialogManager
     private UserDataInfo userData;
 
     [SerializeField] GameObject player;
-    [SerializeField] GameObject dialogFrame;
+    Animator playerAnimator;
+    PlayerMove playerMove;
 
+    [SerializeField] GameObject dialogFrame;
     [SerializeField] SpeechBubbleManager speechBubbleManager;
 
     void Start()
@@ -18,7 +20,9 @@ public class DialogMainTutorial : DialogManager
         if (userData.clearTutorial)
             return;
 
-        player.GetComponent<Animator>().SetInteger("anim", 0);
+        playerAnimator = player.GetComponent<Animator>();
+        playerMove = player.GetComponent<PlayerMove>();
+        playerAnimator.SetInteger("anim", 0);
 
         dialogEndCallback = EndDialog;
         LoadJsonData();
@@ -32,6 +36,9 @@ public class DialogMainTutorial : DialogManager
 
     void EndDialog()
     {
+        UserData.instance.SetUserDataInfo("clearTutorial", true);
+        dialogFrame.SetActive(false);
+
         string[] dialogList =
         {
             "일단 좀 더 돌아다녀 보는게 좋겠다",
@@ -51,12 +58,24 @@ public class DialogMainTutorial : DialogManager
             case 0:
                 callback = () =>
                 {
-                    player.GetComponent<Animator>().SetInteger("anim", 2);
+                    playerAnimator.SetInteger("anim", 2);
                 };
                 break;
+
+            case 6:
+                callback = () =>
+                {
+                    playerMove.ToggleTouchEffect(false);
+                    dialogFrame.SetActive(true);
+                    playerAnimator.SetInteger("anim", 0);
+                };
+                break;
+
             default:
                 break;
         }
+
+        callback += () => { SoundManager.instance.PlaySFX(SoundClip.dialogSFX, 0.4f); };
 
         return callback;
     }
@@ -70,20 +89,21 @@ public class DialogMainTutorial : DialogManager
             case 5:
                 callback = () =>
                 {
-                    isChatPause = true;
+                    PauseChat();
 
                     dialogFrame.SetActive(false);
-                    player.GetComponent<Animator>().SetInteger("anim", 0);                    
+                    playerAnimator.SetInteger("anim", 0);                    
 
                     string[] dialogList =
                     {
                         "일단 좀 돌아다녀 보자",
-                        "바닥을 터치하면 " + System.Environment.NewLine + "움직일 수 있는 것 같아"
+                        "바닥을 터치하면\n움직일 수 있는 것 같아"
                     };
 
                     speechBubbleManager.StartSpeechBubbleGuide(dialogList);
                 };
                 break;
+
             default:
                 break;
         }

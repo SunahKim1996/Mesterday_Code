@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +30,7 @@ public abstract class DialogManager : MonoBehaviour
     int talkNum = 0;    
     float chatSpeed = 0.1f;
     [HideInInspector] public bool isTalking = false;
-    protected bool isChatPause = true;
+    [HideInInspector] public bool isChatPause = true;
 
     Coroutine chatCor = null;
 
@@ -62,19 +63,13 @@ public abstract class DialogManager : MonoBehaviour
     protected abstract Action GetStartCallback(int index);
     protected abstract Action GetEndCallback(int index);
 
-    protected void StartChat()
-    {
-        Chat();
-        isChatPause = false;
-    }
-
     /// <summary>
-    /// 중단했을 때, 다시 시작 
+    /// 중단 후 다시 시작할 때도 해당 메소드 사용 
     /// </summary>
-    public void RestartChat()
-    {
+    public void StartChat()
+    {        
         isChatPause = false;
-        NextChat();
+        Chat();
     }
 
     void NextChat()
@@ -96,22 +91,21 @@ public abstract class DialogManager : MonoBehaviour
         else
         {
             if (dialogueDataList[talkNum].endCallback != null)
+            {
                 dialogueDataList[talkNum].endCallback();
+                talkNum++;
+            }               
 
             else if (talkNum < (dialogueDataList.Count - 1))
             {
-                talkNum += 1;
+                talkNum++;
                 Chat();
             }
 
             // 모든 대사 출력 완료하면, EndCallback
             else
             {
-                if (chatCor != null)
-                {
-                    StopCoroutine(chatCor);
-                    chatCor = null;
-                }
+                PauseChat();
 
                 if (dialogEndCallback != null)
                     dialogEndCallback();
@@ -128,6 +122,18 @@ public abstract class DialogManager : MonoBehaviour
             dialogueDataList[talkNum].startCallback();
     }
 
+    protected void PauseChat()
+    {
+        isChatPause = true;
+        isTalking = false;
+
+        if (chatCor != null)
+        {
+            StopCoroutine (chatCor);
+            chatCor = null;
+        }
+    }
+
     IEnumerator ChatConversation(string narration, float speed)
     {
         isTalking = true;
@@ -140,7 +146,8 @@ public abstract class DialogManager : MonoBehaviour
             dialogUI.text = writerText;
             yield return new WaitForSeconds(speed);
         }
-
+        
         isTalking = false;
+        chatCor = null;
     }
 }

@@ -19,7 +19,10 @@ public class TitleCameraMoving : MonoBehaviour
         if (userData.clearTutorial == false)
             StartCoroutine(TitleTxtFadeOut());
         else
+        {
+            titleCam.gameObject.SetActive(false);
             playerCam.gameObject.SetActive(true);
+        }
     }
 
     /// <summary>

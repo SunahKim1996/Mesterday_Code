@@ -61,14 +61,14 @@ public class DialogTutorial : DialogManager
             case 1:
                 callback = () =>
                 {
-                    isChatPause = true;
+                    PauseChat();
                     inputDialog.ToggleInputField(InputType.NickName, true);
                 };
                 break;
             case 2:
                 callback = () =>
                 {
-                    isChatPause = true;
+                    PauseChat();
                     inputDialog.ToggleInputField(InputType.SchoolName, true);
                 };
                 break;

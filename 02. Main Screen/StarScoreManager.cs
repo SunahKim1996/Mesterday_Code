@@ -26,7 +26,7 @@ public class StarScoreManager : MonoBehaviour
         for (int i = 1; i <= GameData.MaxStage; i++)
         {
             string fieldName = $"clear0{i}";
-            FieldInfo fieldInfo = typeof(UserData).GetField(fieldName);
+            FieldInfo fieldInfo = typeof(UserDataInfo).GetField(fieldName);
 
             if (fieldInfo == null)
                 continue;
@@ -47,13 +47,14 @@ public class StarScoreManager : MonoBehaviour
         for (int i = 1; i <= GameData.MaxStage; i++)
         {
             string fieldName = $"stage{i}_score";
-            FieldInfo fieldInfo = typeof(UserData).GetField(fieldName);
+            FieldInfo fieldInfo = typeof(UserDataInfo).GetField(fieldName);
 
             if (fieldInfo == null)
                 continue;
 
             int starScore = (int)fieldInfo.GetValue(userData);
             List<GameObject> starList = stageStarList[i - 1].GetComponentsInChildren<GameObject>().ToList();
+            starList.Remove(stageStarList[i - 1]);
 
             for (int j = 0; j < starList.Count; j++)
                 starList[j].GetComponent<Renderer>().material = (j < starScore) ? clearStarMat : noClearStarMat;

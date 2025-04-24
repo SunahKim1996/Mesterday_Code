@@ -8,13 +8,6 @@ public class TitleCamera : MonoBehaviour
     [SerializeField] Transform bg1;
     [SerializeField] Transform bg2;
 
-    // Update is called once per frame
-
-    void Start()
-    {
-        //StartCoroutine(BackgroundMoving());    
-    }
-
     void Update()
     {
         MoveBG(bg1);
@@ -29,20 +22,4 @@ public class TitleCamera : MonoBehaviour
         if (targetBG.position.x <= -38f)
             targetBG.position = new Vector3(38f, 0f, 0f);
     }
-
-
-    /*
-    IEnumerator BackgroundMoving()
-    {
-        while(true)
-        {
-            yield return new WaitForSeconds(55f);
-            backGround.transform.position = new Vector3(35f, 0f, 0f);
-
-
-            yield return new WaitForSeconds(55f);
-            backGroundClone.transform.position = new Vector3(35f, 0f, 0f);            
-        }
-    }
-    */
 }

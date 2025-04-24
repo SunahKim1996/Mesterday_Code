@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.EventSystems;
+
 
 public class PlayerMove : MonoBehaviour
 {
-    PlayerTrigger playerTrigger;
+    PlayerDoor playerDoor;
     Animator playerAnimator;
     [SerializeField] Camera playerCamera;
 
-    float targetDis;
     [SerializeField] float moveSpeed;
 
     [SerializeField] GameObject touchEffect;
@@ -19,7 +18,7 @@ public class PlayerMove : MonoBehaviour
 
     void Start()
     {
-        playerTrigger = GetComponent<PlayerTrigger>();
+        playerDoor = GetComponent<PlayerDoor>();
         playerAnimator = GetComponent<Animator>();
     }
 
@@ -27,18 +26,24 @@ public class PlayerMove : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (!playerCamera.gameObject.activeSelf)
-                return;
+            Debug.Log($"Click");
 
-            if (dialogManager.isTalking) //HERE: 여기 체크가 안되는 듯함 확인 필요
+            if (!playerCamera.gameObject.activeSelf)
             {
-                Debug.Log($"Return0 {dialogManager.isTalking}");
+                Debug.Log("Return0");
+                return;
+            }
+                
+
+            if (!dialogManager.isChatPause)
+            {
+                Debug.Log("Return1");
                 return;
             }
 
-            if (playerTrigger.playerDoorState != PlayerDoorState.None)
+            if (playerDoor.playerDoorState != PlayerDoorState.None)
             {
-                Debug.Log($"Return1 {playerTrigger.playerDoorState}");
+                Debug.Log("Return2");
                 return;
             }
 
@@ -46,29 +51,41 @@ public class PlayerMove : MonoBehaviour
             Physics.Raycast(ray, out hit);
 
             if (hit.collider == null)
+            {
+                Debug.Log("Return3");
                 return;
+            }
+
+            Debug.Log($"hit.collider.tag {hit.collider.tag}");
 
             bool isActive = (hit.collider.tag == "floor") ? true : false;
             ToggleTouchEffect(isActive);
 
             if (!isActive)
+            {
+                Debug.Log("Return4");
                 return;
+            }
 
-            transform.LookAt(hit.point);
+            Vector3 targetPos = new Vector3(hit.point.x, transform.position.y, hit.point.z);
+            transform.LookAt(targetPos, Vector3.up);
             playerAnimator.SetInteger("anim", 1);
 
             if (moveCor == null)
+            {
+                Debug.Log("Start Coroutine");
                 moveCor = StartCoroutine(CheckMovePlayer());
+            }
+                
         }
     }
     
-    void ToggleTouchEffect(bool state)
+    public void ToggleTouchEffect(bool state)
     {
         if (state)
         {
             Vector3 effectPos = touchEffect.transform.position;
             Vector3 targetPos = new Vector3(hit.point.x, effectPos.y, hit.point.z);
-
             touchEffect.transform.position = targetPos;
         }
 
@@ -77,17 +94,27 @@ public class PlayerMove : MonoBehaviour
 
     void MovePlayer()
     {
-        Debug.Log("MovePlayer====================");
         Vector3 targetPos = new Vector3(hit.point.x, transform.position.y, hit.point.z);
-        transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
-        targetDis = (targetPos - transform.position).magnitude;
+        Vector3 dir = (targetPos - transform.position).normalized;
+        float targetDis = (targetPos - transform.position).magnitude;
 
-        if (targetDis <= 0.1f)
+        transform.Translate(dir * moveSpeed * Time.deltaTime, Space.World);
+
+        if (targetDis <= 0.5f)
+            StopMovePlayer();
+    }
+
+    void StopMovePlayer()
+    {
+        ToggleTouchEffect(false);
+        playerAnimator.SetInteger("anim", 0);
+
+        if (moveCor != null)
         {
-            ToggleTouchEffect(false);
-            playerAnimator.SetInteger("anim", 0);
+            StopCoroutine(moveCor);
+            moveCor = null;
 
-            StopCoroutine("CheckMovePlayer");
+            Debug.Log("Stop Coroutine");
         }
     }
 
@@ -98,17 +125,28 @@ public class PlayerMove : MonoBehaviour
             yield return null;
             MovePlayer();
 
-            if (dialogManager.isTalking)
+            if (hit.collider == null || hit.collider.tag != "floor")
+            {
+                StopMovePlayer();
                 yield break;
+            }
 
-            switch (playerTrigger.playerDoorState)
+            if (dialogManager.isTalking)
+            {
+                StopMovePlayer();
+                yield break;
+            }
+
+            switch (playerDoor.playerDoorState)
             {
                 case PlayerDoorState.Opening:
                     HandlePlayerDoorState(3);
+                    StopMovePlayer();
                     yield break;
 
                 case PlayerDoorState.Locked:
                     HandlePlayerDoorState(0);
+                    StopMovePlayer();
                     yield break;
             }
         }
