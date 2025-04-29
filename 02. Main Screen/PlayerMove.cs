@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 
 public class PlayerMove : MonoBehaviour
@@ -26,35 +27,20 @@ public class PlayerMove : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log($"Click");
-
             if (!playerCamera.gameObject.activeSelf)
-            {
-                Debug.Log("Return0");
                 return;
-            }
-                
 
             if (!dialogManager.isChatPause)
-            {
-                Debug.Log("Return1");
                 return;
-            }
 
             if (playerDoor.playerDoorState != PlayerDoorState.None)
-            {
-                Debug.Log("Return2");
                 return;
-            }
 
             Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
             Physics.Raycast(ray, out hit);
 
             if (hit.collider == null)
-            {
-                Debug.Log("Return3");
                 return;
-            }
 
             Debug.Log($"hit.collider.tag {hit.collider.tag}");
 
@@ -62,10 +48,7 @@ public class PlayerMove : MonoBehaviour
             ToggleTouchEffect(isActive);
 
             if (!isActive)
-            {
-                Debug.Log("Return4");
                 return;
-            }
 
             Vector3 targetPos = new Vector3(hit.point.x, transform.position.y, hit.point.z);
             transform.LookAt(targetPos, Vector3.up);

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public enum PlayerDoorState
@@ -58,14 +59,14 @@ public class PlayerDoor : MonoBehaviour
                 if (curDoorIndex > 1)
                 {
                     string fieldName = $"clear0{curDoorIndex - 1}";
-                    FieldInfo fieldInfo = typeof(UserDataInfo).GetField($"clear0{curDoorIndex - 1}");
+                    FieldInfo fieldInfo = typeof(UserDataInfo).GetField(fieldName);
                     bool isPreStageClear = (bool)fieldInfo.GetValue(userData);
 
                     // 이전 스테이지 클리어는 했는데 별점수가 0인 경우, 
                     if (isPreStageClear)
                     {
-                        fieldName = $"stage{curDoorIndex - 1}_score";
-                        fieldInfo = typeof(UserDataInfo).GetField($"stage{curDoorIndex - 1}_score");
+                        fieldName = $"stage{curDoorIndex - 1}_Score";
+                        fieldInfo = typeof(UserDataInfo).GetField(fieldName);
                         int starScore = (int)fieldInfo.GetValue(userData);
 
                         if (starScore <= 0)

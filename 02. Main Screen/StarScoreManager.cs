@@ -8,6 +8,7 @@ public class StarScoreManager : MonoBehaviour
     UserDataInfo userData;
 
     [SerializeField] List<GameObject> stageStarList;
+    [SerializeField] List<GameObject> diaryStarsList;
 
     [SerializeField] Material clearStarMat;
     [SerializeField] Material noClearStarMat;
@@ -46,20 +47,27 @@ public class StarScoreManager : MonoBehaviour
     {
         for (int i = 1; i <= GameData.MaxStage; i++)
         {
-            string fieldName = $"stage{i}_score";
+            string fieldName = $"stage{i}_Score";
             FieldInfo fieldInfo = typeof(UserDataInfo).GetField(fieldName);
 
             if (fieldInfo == null)
                 continue;
 
             int starScore = (int)fieldInfo.GetValue(userData);
-            List<GameObject> starList = stageStarList[i - 1].GetComponentsInChildren<GameObject>().ToList();
-            starList.Remove(stageStarList[i - 1]);
 
-            for (int j = 0; j < starList.Count; j++)
-                starList[j].GetComponent<Renderer>().material = (j < starScore) ? clearStarMat : noClearStarMat;
+            // 문 위 별 점수 갱신 
+            List<GameObject> doorStarList = stageStarList[i - 1].GetComponentsInChildren<GameObject>().ToList();
+            doorStarList.Remove(stageStarList[i - 1]);
+
+            for (int j = 0; j < doorStarList.Count; j++)
+                doorStarList[j].GetComponent<Renderer>().material = (j < starScore) ? clearStarMat : noClearStarMat;
+
+            // 다이어리 별 점수 갱신
+            List<GameObject> diaryStarList = diaryStarsList[i - 1].GetComponentsInChildren<GameObject>().ToList();
+            diaryStarList.Remove(diaryStarsList[i - 1]);
+
+            for (int j = 0; j < diaryStarList.Count; j++)
+                diaryStarList[j].GetComponent<Renderer>().material = (j < starScore) ? clearStarMat : noClearStarMat;
         }
-
-        //TODO: 다이어리도 해야함
     }
 }
