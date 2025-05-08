@@ -14,6 +14,7 @@ public class TouchEffectManager : MonoBehaviour
 
     void Start()
     {
+        // TODO: 메인에서 하교하기 누르면 여기서 오류 발생 
         ObjectPoolManager.instance.Init(PoolKey.TouchEffect, effectParent, effectPrefab);
     }
 
