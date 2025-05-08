@@ -99,7 +99,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayBGM(SoundClip clip, bool isLoop = true)
     {
-        if (bgmSound.clip == clips[(int)clip])
+        if (bgmSound.clip == clips[(int)clip] && bgmSound.isPlaying)
             return;
 
         bgmSound.clip = clips[(int)clip];

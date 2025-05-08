@@ -26,7 +26,7 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        if (Diary.isDiaryOn || SummaryNote.isNoteOn)
+        if (Diary.isDiaryOn || SummaryNote.isNoteOn || GamePause.isPauseTime)
             return;
 
         if (Input.GetMouseButtonDown(0))

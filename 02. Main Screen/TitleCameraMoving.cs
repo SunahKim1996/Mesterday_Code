@@ -77,7 +77,6 @@ public class TitleCameraMoving : MonoBehaviour
     /// </summary>
     void EndCameraDirect()
     {
-        TouchEffectManage_star.isSecondCamOn = true; //TODO
         dialogMainTutorial.StartDialog();
 
         // Player 카메라로 전환 
