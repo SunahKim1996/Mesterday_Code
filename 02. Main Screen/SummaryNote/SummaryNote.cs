@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class SummaryNote : MonoBehaviour
 {
+    public static bool isNoteOn = false;
     UserDataInfo userData;
 
     [SerializeField] GameObject noteUI;
@@ -23,7 +24,6 @@ public class SummaryNote : MonoBehaviour
         if (!userData.clearTutorial)
             return;
 
-        Init();
         flipCard = GetComponent<FlipCard>();
         cardList = cardListOrigin.GetComponentsInChildren<NoteCard>().ToList();
 
@@ -37,57 +37,29 @@ public class SummaryNote : MonoBehaviour
             fieldInfo = typeof(UserDataInfo).GetField(fieldName);
             int starScore = (int)fieldInfo.GetValue(userData);
 
-            if (isClear && starScore >= 3)
-            {
-                NoteCard card = cardList[i - 1];
-                card.stamp.SetActive(true);
-                card.flipButton.SetActive(true);
-                card.emptyText.SetActive(false);
-                card.cardBack.SetActive(false);
+            NoteCard card = cardList[i - 1];
+            bool isUnlocked = (isClear && starScore >= 3);
+            UnlockCard(card, isUnlocked);
+            card.cardBack.SetActive(false);
 
-                if (userData.NoteChange)
-                    newSign.SetActive(true);
-            }
+            if (userData.NoteChange)
+                newSign.SetActive(true);
         }
     }
 
-    void Init()
+    void UnlockCard(NoteCard card, bool isUnlocked)
     {
-        noteUI.SetActive(false);
-        newSign.SetActive(false);
+        card.stamp.SetActive(isUnlocked);
+        card.cardForward.SetActive(isUnlocked);
+        card.flipButton.SetActive(isUnlocked);
+        card.emptyText.SetActive(!isUnlocked);
 
-        for (int i = 0; i < GameData.MaxStage; i++)
-        {
-            NoteCard card = cardList[i];
-            card.emptyText.SetActive(true);
-            emptyTextList[i].SetActive(true);
-            stampList[i].SetActive(false);
-            cardBackList[i].SetActive(false);
-
-            GameObject cardBackObj = cardBackList[i];
-            buttonList[i].GetComponent<Button>().onClick.AddListener(() =>
+        if (isUnlocked)
+            card.flipButton.GetComponent<Button>().onClick.AddListener(() =>
             {
-                flipCard.OnStartFlip(cardBackObj);
+                flipCard.OnStartFlip(card.cardObj, card.cardBack, card.cardForward);
             });
-
-            buttonList[i].SetActive(false);
-        }
     }
-
-    /*
-    /// <summary>
-    /// 카드를 앞면 혹은 뒷면으로 보이게 처리
-    /// </summary>
-    /// <param name="state"> state 가 true 이면 앞면, false 이면 뒷면 </param>
-    void ToggleCardForward(NoteCard card, bool state)
-    {
-        card.stamp.SetActive(!state);        
-        card.emptyText.SetActive(false);
-        card.cardBack.SetActive(false);
-
-        //card.flipButton.SetActive(true);
-    }
-    */
 
     public void OnToggleNoteUI(bool state)
     {
@@ -97,18 +69,22 @@ public class SummaryNote : MonoBehaviour
             UserData.instance.SetUserDataInfo("NoteChange", false);
         else
         {
-            for (int i = 0;i < cardBackList.Count; i++)
+            for (int i = 0; i < cardList.Count; i++)
             {
-                cardBackList[i].SetActive(false);
-                cardBackList[i].transform.rotation = Quaternion.identity;
+                if (!cardList[i].emptyText.activeSelf)
+                {
+                    cardList[i].cardBack.SetActive(false);
+                    cardList[i].cardForward.SetActive(true);
+                    cardList[i].cardObj.transform.rotation = Quaternion.identity;
+                }
             }
 
             flipCard.InitNote();
-        }            
+        }
 
         noteUI.SetActive(state);
         newSign.SetActive(!state);
 
-        //PlayerTrigger.Instance.isNoteOrDiaryOn = state; //TODO
+        isNoteOn = state;
     }
 }

@@ -17,6 +17,7 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField] DialogManager dialogManager;
 
+
     void Start()
     {
         playerDoor = GetComponent<PlayerDoor>();
@@ -25,6 +26,9 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
+        if (Diary.isDiaryOn || SummaryNote.isNoteOn)
+            return;
+
         if (Input.GetMouseButtonDown(0))
         {
             if (!playerCamera.gameObject.activeSelf)

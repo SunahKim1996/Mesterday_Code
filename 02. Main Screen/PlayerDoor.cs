@@ -35,6 +35,9 @@ public class PlayerDoor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Diary.isDiaryOn || SummaryNote.isNoteOn)
+            return;
+
         if (Input.GetMouseButtonDown(0))
         {
             if (playerDoorState == PlayerDoorState.Opening)

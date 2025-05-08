@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+//todo: 앞글자 대문자로 변경
 public enum SoundClip
 {
     LoginBGM,
@@ -31,6 +31,7 @@ public enum SoundClip
     getCallSFX,
     timerSFX,
     jingleSFX,
+    PaperSFX,
 }
 
 public class SoundManager : MonoBehaviour

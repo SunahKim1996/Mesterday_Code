@@ -5,12 +5,11 @@ using UnityEngine.UI;
 
 public class Diary : MonoBehaviour
 {
+    public static bool isDiaryOn = false;
     UserDataInfo userData;
 
     [SerializeField] GameObject diaryUI;
     [SerializeField] List<GameObject> startButtonList;
-
-    //HERE: Diary 나 Note 켜져있을 때 ray 안먹게 해야함
 
     void InitButton()
     {
@@ -62,51 +61,6 @@ public class Diary : MonoBehaviour
         diaryUI.SetActive(state);
         SoundManager.instance.PlaySFX(SoundClip.ButtonSFX, 0.4f);
 
-        //PlayerTrigger.Instance.isNoteOrDiaryOn = true; //TODO
+        isDiaryOn = state;
     }
-
-    /*
-    public void BackButton()
-    {
-        SoundManager.instance.PlaySFX(SoundClip.ButtonSFX, 0.4f);
-
-        DiaryScreen.SetActive(false);
-        NoteBtn.SetActive(true);
-
-        //PlayerTrigger.Instance.isNoteOrDiaryOn = false; //TODO
-
-        backBtn.SetActive(false);
-    }
-   
-
-    public void StartBtn_1_1_On()
-    {
-        LoadingManager.LoadScene(3);
-    }
-
-    public void StartBtn_1_2_On()
-    {
-        LoadingManager.LoadScene(4);
-    }
-
-    public void StartBtn_1_3_On()
-    {
-        LoadingManager.LoadScene(5);
-    }
-
-    public void StartBtn_1_4_On()
-    {
-        LoadingManager.LoadScene(6);
-    }
-
-    public void StartBtn_1_5_On()
-    {
-        LoadingManager.LoadScene(7);
-    }
-
-    public void StartBtn_1_6_On()
-    {
-        LoadingManager.LoadScene(8);
-    }
-     */
 }
