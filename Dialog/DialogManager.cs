@@ -24,8 +24,10 @@ public abstract class DialogManager : MonoBehaviour
 
     protected DialogueData dialogueData;
     protected List<DialogInfo> dialogueDataList = new List<DialogInfo>();
-    [SerializeField] protected Text dialogUI;
-    protected Action dialogEndCallback; // 모든 대사가 끝났을 때 처리 
+    protected Action dialogEndCallback = null; // 모든 대사가 끝났을 때 처리 
+
+    [SerializeField] protected GameObject dialogFrame;
+    [SerializeField] protected Text dialogUI;    
 
     int talkNum = 0;    
     float chatSpeed = 0.1f;
@@ -67,7 +69,8 @@ public abstract class DialogManager : MonoBehaviour
     /// 중단 후 다시 시작할 때도 해당 메소드 사용 
     /// </summary>
     public void StartChat()
-    {        
+    {
+        dialogFrame.SetActive(true);
         isChatPause = false;
         Chat();
     }
@@ -124,6 +127,8 @@ public abstract class DialogManager : MonoBehaviour
 
     protected void PauseChat()
     {
+        dialogFrame.SetActive(false);
+
         isChatPause = true;
         isTalking = false;
 

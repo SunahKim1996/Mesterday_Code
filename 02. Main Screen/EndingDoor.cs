@@ -4,9 +4,7 @@ using UnityEngine;
 public class EndingDoor : MonoBehaviour
 {
     [SerializeField] GameObject[] endingObj;
-
     [SerializeField] GameObject player;
-    [SerializeField] SpeechBubbleManager speechBubbleManager;
 
     UserDataInfo userData;
 
@@ -25,7 +23,7 @@ public class EndingDoor : MonoBehaviour
                 player.transform.LookAt(targetPos);
 
                 string[] dialogList = { "새로운 문이 나타났어 !" };
-                speechBubbleManager.StartSpeechBubbleGuide(dialogList);
+                SpeechBubbleManager.instance.StartSpeechBubbleGuide(dialogList);
 
                 UserData.instance.SetUserDataInfo("EndingOpen", true);
             }

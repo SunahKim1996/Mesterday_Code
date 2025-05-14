@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class SpeechBubbleManager : MonoBehaviour
 {
+    public static SpeechBubbleManager instance;
+
     [SerializeField] GameObject speechBubble;
     [SerializeField] Text speechBubbleTxt;
 
@@ -13,6 +15,18 @@ public class SpeechBubbleManager : MonoBehaviour
     [HideInInspector] public bool isTalking = false;
 
     Coroutine cor = null;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     void LateUpdate()
     {

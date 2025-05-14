@@ -11,9 +11,6 @@ public class DialogMainTutorial : DialogManager
     Animator playerAnimator;
     PlayerMove playerMove;
 
-    [SerializeField] GameObject dialogFrame;
-    [SerializeField] SpeechBubbleManager speechBubbleManager;
-
     void Start()
     {       
         userData = UserData.instance.userData;
@@ -29,15 +26,11 @@ public class DialogMainTutorial : DialogManager
     }    
 
     public void StartDialog()
-    {
-        dialogFrame.SetActive(true);
-        StartChat();
-    }
+        => StartChat();
 
     void EndDialog()
     {
         UserData.instance.SetUserDataInfo("clearTutorial", true);
-        dialogFrame.SetActive(false);
 
         string[] dialogList =
         {
@@ -46,7 +39,7 @@ public class DialogMainTutorial : DialogManager
             "문패를 보니 교실인 것 같아",
             "가까이 가서 문을 열어보자",
         };
-        speechBubbleManager.StartSpeechBubbleGuide(dialogList);
+        SpeechBubbleManager.instance.StartSpeechBubbleGuide(dialogList);
     }
 
     protected override Action GetStartCallback(int index)
@@ -100,7 +93,7 @@ public class DialogMainTutorial : DialogManager
                         "바닥을 터치하면\n움직일 수 있는 것 같아"
                     };
 
-                    speechBubbleManager.StartSpeechBubbleGuide(dialogList);
+                    SpeechBubbleManager.instance.StartSpeechBubbleGuide(dialogList);
                 };
                 break;
 
